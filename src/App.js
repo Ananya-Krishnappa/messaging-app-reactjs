@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import Pusher from 'pusher-js';
 import './App.scss';
-import Sidebar from './components/Sidebar';
-import Chat from './components/Chat';
+import Sidebar from './components/sidebar/Sidebar';
+import Chat from './components/chat/Chat';
+import axios from './utils/Axios';
+
 function App() {
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    axios.get("/messages/sync").then(res => {
+      setMessages(res.data);
+    })
+  }, []);
   useEffect(() => {
     var pusher = new Pusher('8bc57a4fd00912cb2863', {
       cluster: 'ap2'
@@ -27,7 +34,7 @@ function App() {
     <div className="app">
       <div className="app__body">
         <Sidebar></Sidebar>
-        <Chat></Chat>
+        <Chat messages={messages} ></Chat>
       </div>
     </div>
   );
