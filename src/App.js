@@ -4,9 +4,10 @@ import './App.scss';
 import Sidebar from './components/sidebar/Sidebar';
 import Chat from './components/chat/Chat';
 import axios from './utils/Axios';
-
+import Login from './components/login/Login';
 function App() {
   const [messages, setMessages] = useState([]);
+  const [user, setUser] = useState(null);
   useEffect(() => {
     axios.get("/messages/sync").then(res => {
       setMessages(res.data);
@@ -22,7 +23,7 @@ function App() {
     // subscribes to a channel called 'messages', listening for an event called 'inserted'.
     const channel = pusher.subscribe('messages');
     channel.bind('inserted', (data) => {
-      setMessages([...messages, data])
+      setMessages([...messages, data]);
     });
     return () => {
       channel.unbind_all()
@@ -32,10 +33,12 @@ function App() {
   console.log(messages);
   return (
     <div className="app">
-      <div className="app__body">
-        <Sidebar></Sidebar>
-        <Chat messages={messages} ></Chat>
-      </div>
+      {!user ? <Login /> : (
+        <div className="app__body">
+          <Sidebar></Sidebar>
+          <Chat messages={messages} ></Chat>
+        </div>
+      )}
     </div>
   );
 }
