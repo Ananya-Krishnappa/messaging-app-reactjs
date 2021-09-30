@@ -5,9 +5,11 @@ import Sidebar from './components/sidebar/Sidebar';
 import Chat from './components/chat/Chat';
 import axios from './utils/Axios';
 import Login from './components/login/Login';
+import { useStateValue } from './components/StateProvider';
 function App() {
   const [messages, setMessages] = useState([]);
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
+  const [{ user }, dispatch] = useStateValue();
   useEffect(() => {
     axios.get("/messages/sync").then(res => {
       setMessages(res.data);
