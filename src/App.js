@@ -37,7 +37,7 @@ function App() {
     <div className="app">
       {!user ? <Login /> : (
         <div className="app__body">
-          <Sidebar></Sidebar>
+          <Sidebar messages={messages}></Sidebar>
           <Chat messages={messages} ></Chat>
         </div>
       )}

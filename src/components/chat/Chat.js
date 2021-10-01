@@ -3,15 +3,17 @@ import { Avatar, IconButton } from '@material-ui/core';
 import { AttachFile, MoreVert, SearchOutlined, InsertEmoticon } from '@material-ui/icons';
 import MicIcon from '@material-ui/icons/Mic';
 import axios from '../../utils/Axios';
+import { useStateValue } from '../StateProvider';
 import './Chat.scss';
 const Chat = ({ messages }) => {
     const [seed, setSeed] = useState("");
     const [input, setInput] = useState("");
+    const [{ user }, dispatch] = useStateValue();
     const sendMessage = async (e) => {
         e.preventDefault();
         await axios.post('/messages/new', {
             message: input,
-            name: "ananya",
+            name: user.displayName,
             timestamp: new Date().toUTCString(),
             received: true
         });
@@ -25,8 +27,10 @@ const Chat = ({ messages }) => {
             <div className="chat__header">
                 <Avatar src={`https://avatars.dicebear.com/api/human/b${seed}.svg`} />
                 <div className="chat__headerInfo">
-                    <h3>Person {seed}</h3>
-                    <p>Last seen at...</p>
+                    <h3>Dev Help</h3>
+                    <p>Last seen at {" "}
+                        {messages[messages.length - 1]?.timestamp}
+                    </p>
                 </div>
                 <div className="chat__headerRight">
                     <IconButton>
@@ -42,7 +46,8 @@ const Chat = ({ messages }) => {
             </div>
             <div className="chat__body">
                 {messages.map(message => (
-                    <p className={`chat__message ${message.received &&
+                    <p key={message.message} className={`chat__message ${message.name === user.
+                        displayName &&
                         'chat__receiver'}`}>
                         <span className="chat__name">{message.name}</span>
                         {message.message}
